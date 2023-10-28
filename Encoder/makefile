@@ -1,22 +1,44 @@
-DEFINES =
-JFLAGS = -O
-DEFS = globals.h prototypes.h read_write.h marker.h
-BASELINEE =  encoder.o marker.o general.o regular_mode.o run_mode.o
+CC=cc
+PKGNAME=loco
+OPTFLAGS= -Aa $(CFL) -DBIG_ENDIAN
 
-.c.o:
-	gcc $(JFLAGS) $(DEFINES) -c $*.c 
+CFLAGS  = $(OPTFLAGS) $(VFL) $(DFL) -DPGMPREFIX=\"$(PREFIX)\" -DMELCODE -DEXTERNDISTRIB -Dinline="" -DNDEBUG
 
-.c.ln:
-	lint -c $*.c 
+LNKFLAGS = -lm
 
+SRCS = global.c jpegmark.c initialize.c encoder.c lossless_e.c lossy_e.c bitio.c melcode.c 
+INCL = global.h jpegmark.h bitio.h
+
+EOBJS = global.o jpegmark.o initialize.o encoder.o lossless_e.o lossy_e.o bitio.o melcode.o
+
+loco:
+	$(MAKE) -$(MAKEFLAGS) VFL="" PREFIX="loco" codec
+
+ENCODER = $(PREFIX)e
+
+codec: $(ENCODER)
+
+jpegmark.o: jpegmark.c jpegmark.h bitio.h global.h
+
+global.o: global.h global.c
+
+initialize.o: initialize.c bitio.h global.h
+
+lossless_e.o: global.h lossless_e.c bitio.h 
+
+lossy_e.o: global.h lossy_e.c bitio.h
+
+encoder.o: encoder.c jpegmark.c global.h 
+
+bitio.o: bitio.c bitio.h global.h
+
+melcode.o: melcode.c bitio.h global.h
+
+
+$(ENCODER): $(EOBJS)
+	$(CC) $(CFLAGS) -o $@ $(EOBJS) $(LNKFLAGS)
+
+lint:
+	lint $(SRCS)
 clean:
-	rm *.o jpeglse
-
-jpeglse: $(BASELINEE) 
-	gcc $(DEFINES) $(JFLAGS) $(BASELINEE) -lm -o jpeglse
-
-encoder.o:      encoder.c $(DEFS) read_write.h globals.h prototypes.h marker.h
-marker.o:       marker.c $(DEFS) marker.h globals.h prototypes.h
-general.o:      general.c $(DEFS) globals.h prototypes.h
-regular_mode.o: regular_mode.c $(DEFS) globals.h prototypes.h
-run_mode.o:     run_mode.c $(DEFS) globals.h prototypes.h
+	-rm -f *.o core loco* *.out
