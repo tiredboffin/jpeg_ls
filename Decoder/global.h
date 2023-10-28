@@ -52,6 +52,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdint.h>
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
@@ -94,8 +95,9 @@ extern char	*plane_int_string,
 			*line_int_string,
 			*pixel_int_string;
 
-
+#ifndef BIG_ENDIAN
 #define BIG_ENDIAN	1
+#endif
 
 typedef struct	jpeg_ls {
 
@@ -290,11 +292,11 @@ extern int	RESET;
 /****** Type prototypes */
 
 /* Portability types */
-typedef unsigned char byte;
-typedef unsigned short word;
-typedef unsigned long dword;
+typedef uint8_t byte;
+typedef uint16_t word;
+typedef uint32_t dword;
 
-typedef unsigned short pixel;
+typedef word pixel;
 
 
 

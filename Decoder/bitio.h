@@ -55,6 +55,7 @@
 #define BITIO_H
 
 #include "global.h"
+#include <string.h>
 
 /* BYTE I/O variables */
 #define BUFSIZE ((16*1024)-4) /* Size of input BYTE buffer */

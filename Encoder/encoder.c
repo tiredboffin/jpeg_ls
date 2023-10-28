@@ -250,7 +250,8 @@ void initialize(int argc, char *argv[])
 		 gotinf = 0,
 		 gotoutf = 0;
 
-
+	msgfile = stdout;
+	
 	n_c=0;
 	multi=0;
 	color_mode=DEFAULT_COLOR_MODE;
